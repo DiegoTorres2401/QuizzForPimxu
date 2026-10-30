@@ -25,7 +25,7 @@
   --accent: #d75b78;
   --gold: #d9b879;
 }
-* { box-sizing: border-box; }
+*, *:before, *:after { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body { margin: 0; background: var(--site-background); color: var(--site-on-background); font-family: var(--site-font-body); }
 #app { min-height: 100vh; width: 100%; border-radius: 0; background-color: var(--site-background); color: var(--site-on-background); overflow: hidden; position: relative; }
@@ -80,8 +80,7 @@ textarea { min-height:110px; resize:vertical; }
 .ticket-placeholder { border:1px dashed #a85a76; border-radius:12px; min-height:150px; display:grid; place-items:center; padding:18px; color:#d9b9c7; }
 .ticket-placeholder img { max-width:100%; max-height:440px; object-fit:contain; border-radius:8px; }
 .ticket-placeholder a { color:#ffd5e1; }
-.upload { display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:12px 17px; border:1px solid #8c536b; border-radius:999px; cursor:pointer; color:#f5dce5; margin:8px 0; }
-.upload input { display:none; }
+.upload { display:none; } /* Oculto el botón de subir archivos ya que ahora cargará la real del repo */
 .small { color:var(--muted); font-size:.83rem; line-height:1.6; }
 .footer { text-align:center; color:#806b78; font-size:.72rem; margin-top:45px; letter-spacing:.12em; }
 .hidden { display:none !important; }
@@ -172,8 +171,9 @@ textarea { min-height:110px; resize:vertical; }
         <div class="ticket-frame">
           <div class="eyebrow">Admitida · Invitación oficial</div>
           <h2 style="margin:14px 0">Una noche para recordar</h2>
-          <div class="ticket-placeholder" id="ticketPreview"><div><div style="font-size:2.4rem">🎟️</div><strong>Tus entradas te esperan acá</strong><p class="small">...</p></div></div>
-          <label class="upload">＋ Agregar entradas originales<input type="file" id="ticketFiles" accept="image/*,.pdf" multiple></label>
+          <div class="ticket-placeholder" id="ticketPreview">
+            <img src="entradas/entrada-miw.png" alt="Entrada de MIW">
+          </div>
         </div>
         <h3>La misión terminó. 🖤</h3>
         <p class="small">Te amo. Gracias por jugar (y por aguantar mis ideas).</p>
@@ -239,11 +239,24 @@ function hintCode(){document.getElementById('codeFeedback').textContent='Pista: 
 document.getElementById('secretCode').addEventListener('keydown',e=>{if(e.key==='Enter')checkCode()});
 function reveal(){go(6);document.getElementById('bar').style.width='100%';document.getElementById('stageCount').textContent='6 / 6';confetti();}
 function confetti(){const colors=['#d75b78','#d9b879','#f5dce5','#8f1d36'];for(let i=0;i<65;i++){const p=document.createElement('span');p.textContent=['✦','♥','✧'][i%3];p.style.cssText=`position:fixed;z-index:9;left:${Math.random()*100}vw;top:-30px;color:${colors[i%4]};font-size:${12+Math.random()*18}px;pointer-events:none;animation:fall ${2+Math.random()*2}s linear forwards`;document.body.appendChild(p);setTimeout(()=>p.remove(),4200)}const st=document.createElement('style');st.textContent='@keyframes fall{to{transform:translateY(110vh) rotate(540deg);opacity:0}}';document.head.appendChild(st)}
-document.getElementById('ticketFiles').addEventListener('change',e=>{
- const preview=document.getElementById('ticketPreview');preview.innerHTML='';
- [...e.target.files].forEach(file=>{const url=URL.createObjectURL(file);if(file.type.startsWith('image/')){const img=document.createElement('img');img.src=url;img.alt='Entrada de MIW';preview.appendChild(img)}else if(file.type==='application/pdf'){const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener';a.textContent='Abrir entrada en PDF: '+file.name;preview.appendChild(a)}else{const p=document.createElement('p');p.textContent=file.name;preview.appendChild(p)}});
-});
-function restart(){qIndex=0;quizScore=0;renderQuestion();document.getElementById('quizFeedback').textContent='';document.getElementById('quizNext').disabled=true;document.getElementById('quizNext').textContent='CONTINUAR';matched=0;flipped=[];document.querySelectorAll('#memoryMeter i').forEach(x=>x.classList.remove('on'));document.getElementById('memoryNext').disabled=true;document.getElementById('memoryFeedback').textContent='Tocá dos cartas para descubrir si coinciden.';setupMemory();shufflePuzzle();document.getElementById('secretCode').value='';document.getElementById('codeFeedback').textContent='';document.getElementById('codeNext').classList.add('hidden');document.getElementById('codeHint').classList.remove('hidden');document.getElementById('ticketFiles').value='';document.getElementById('ticketPreview').innerHTML='<div><div style="font-size:2.4rem">🎟️</div><strong>Tus entradas te esperan acá</strong><p class="small">Podés cargar las entradas originales debajo. Las imágenes se mostrarán en esta pantalla.</p></div>';go(0)}
+
+function restart(){
+  qIndex=0;quizScore=0;renderQuestion();
+  document.getElementById('quizFeedback').textContent='';
+  document.getElementById('quizNext').disabled=true;
+  document.getElementById('quizNext').textContent='CONTINUAR';
+  matched=0;flipped=[];
+  document.querySelectorAll('#memoryMeter i').forEach(x=>x.classList.remove('on'));
+  document.getElementById('memoryNext').disabled=true;
+  document.getElementById('memoryFeedback').textContent='Tocá dos cartas para descubrir si coinciden.';
+  setupMemory();shufflePuzzle();
+  document.getElementById('secretCode').value='';
+  document.getElementById('codeFeedback').textContent='';
+  document.getElementById('codeNext').classList.add('hidden');
+  document.getElementById('codeHint').classList.remove('hidden');
+  document.getElementById('ticketPreview').innerHTML='<img src="entradas/entrada-miw.png" alt="Entrada de MIW">';
+  go(0);
+}
 </script>
 </body>
 </html>
