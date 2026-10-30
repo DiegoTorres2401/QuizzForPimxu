@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Operación: Una noche Pimxulvidable</title>
+<style>
+:root {
+  --site-primary: #8f1d36;
+  --site-on-primary: #ffffff;
+  --site-secondary: #24131d;
+  --site-on-secondary: #f8eaf0;
+  --site-background: #100c11;
+  --site-on-background: #f7edf1;
+  --site-font-body: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --site-font-heading: Georgia, "Times New Roman", serif;
+  --site-heading-scale: 1;
+  --site-spacing-scale: 1;
+  --site-radius-scale: 1;
+  --site-decoration-opacity: 1;
+  --surface: #191219;
+  --surface-2: #211720;
+  --muted: #c0aeb8;
+  --line: #533344;
+  --accent: #d75b78;
+  --gold: #d9b879;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--site-background); color: var(--site-on-background); font-family: var(--site-font-body); }
+#app { min-height: 100vh; width: 100%; border-radius: 0; background-color: var(--site-background); color: var(--site-on-background); overflow: hidden; position: relative; }
+.ambient { position: fixed; inset: 0; pointer-events: none; opacity: var(--site-decoration-opacity); z-index: 0; background: radial-gradient(ellipse at 15% 10%, #74223b55, transparent 38%), radial-gradient(ellipse at 90% 75%, #4d1e3b44, transparent 36%); }
+.grain { position: fixed; inset: 0; pointer-events: none; opacity: calc(.12 * var(--site-decoration-opacity)); z-index: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E"); }
+main { position: relative; z-index: 1; width: min(850px, 100%); margin: auto; padding: 22px 18px 70px; }
+.topline { display:flex; justify-content:space-between; align-items:center; gap:12px; color:var(--muted); font-size:.72rem; letter-spacing:.16em; text-transform:uppercase; border-bottom:1px solid var(--line); padding:10px 0 16px; }
+.seal { color:var(--gold); border:1px solid #8d6d4c; border-radius:50%; width:40px; height:40px; display:grid; place-items:center; font-family:var(--site-font-heading); font-size:1.15rem; flex:none; }
+.screen { display:none; animation: appear .55s ease both; }
+.screen.active { display:block; }
+@keyframes appear { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+.hero { min-height:72vh; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:44px 8px; }
+.eyebrow { color:var(--accent); letter-spacing:.24em; text-transform:uppercase; font-size:.72rem; font-weight:700; }
+h1,h2,h3 { font-family:var(--site-font-heading); font-weight:500; line-height:1.08; }
+h1 { font-size:clamp(2.7rem, 10vw, 5.5rem); margin:20px 0 14px; }
+h2 { font-size:calc(clamp(2rem, 7vw, 3.6rem) * var(--site-heading-scale)); margin:12px 0; }
+h3 { font-size:1.55rem; margin:8px 0; }
+.lead { max-width:590px; color:#d8c8d0; line-height:1.75; font-size:1.03rem; }
+.ornament { color:var(--gold); font-size:2rem; margin:20px 0; letter-spacing:.4em; }
+.panel { background:linear-gradient(145deg, #211720f2, #151016f5); border:1px solid var(--line); border-radius:calc(22px * var(--site-radius-scale)); padding:clamp(20px, 5vw, 34px); box-shadow:0 18px 55px #0005; margin:28px 0; }
+.progress-wrap { margin:25px 0 30px; }
+.progress-meta { display:flex; justify-content:space-between; color:var(--muted); font-size:.76rem; margin-bottom:8px; }
+.progress { height:5px; background:#382632; border-radius:9px; overflow:hidden; }
+.progress span { display:block; width:0; height:100%; background:linear-gradient(90deg,var(--site-primary),var(--accent)); transition:width .5s; }
+button,.choice { font:inherit; cursor:pointer; }
+.btn { border:1px solid var(--accent); background:var(--site-primary); color:white; padding:14px 23px; border-radius:999px; font-weight:750; letter-spacing:.06em; transition:transform .2s,filter .2s; }
+.btn:hover { transform:translateY(-2px); filter:brightness(1.15); }
+.btn.secondary { background:transparent; color:#f5dce5; border-color:#795064; }
+.btn:focus-visible,.choice:focus-visible,input:focus-visible,textarea:focus-visible { outline:3px solid var(--gold); outline-offset:3px; }
+.actions { display:flex; flex-wrap:wrap; justify-content:center; gap:12px; margin-top:24px; }
+.question { color:var(--muted); font-size:.78rem; letter-spacing:.13em; text-transform:uppercase; }
+.choices { display:grid; gap:11px; margin-top:22px; }
+.choice { width:100%; text-align:left; color:#f7eaf0; background:#281b25; border:1px solid #604052; border-radius:13px; padding:15px 16px; transition:.2s; }
+.choice:hover { border-color:var(--accent); background:#35202d; }
+.choice.selected { border-color:var(--gold); background:#422637; }
+.feedback { min-height:28px; color:var(--gold); margin-top:15px; font-size:.92rem; }
+.riddle { font-family:var(--site-font-heading); font-size:1.45rem; line-height:1.5; text-align:center; color:#f4dce5; margin:20px 0; }
+input,textarea { width:100%; color:#fff; background:#100d12; border:1px solid #674457; border-radius:12px; padding:14px; font:inherit; }
+textarea { min-height:110px; resize:vertical; }
+.code-row { display:flex; gap:10px; max-width:460px; margin:20px auto 0; }
+.code-row input { text-align:center; letter-spacing:.2em; text-transform:uppercase; }
+.meter { display:flex; justify-content:center; gap:8px; margin:22px 0; }
+.meter i { width:9px; height:9px; border-radius:50%; background:#553347; }
+.meter i.on { background:var(--accent); box-shadow:0 0 12px var(--accent); }
+.letter { background:#eee1d4; color:#291b20; padding:clamp(22px,6vw,42px); border-radius:4px; position:relative; box-shadow:0 16px 40px #0008; }
+.letter:before { content:""; position:absolute; inset:9px; border:1px solid #b99b91; pointer-events:none; }
+.letter h2 { color:#5a2035; font-size:2.2rem; }
+.letter p { line-height:1.85; position:relative; }
+.letter .signature { font-family:var(--site-font-heading); font-style:italic; font-size:1.4rem; color:#6d2941; }
+.reveal { text-align:center; padding:42px 8px 20px; }
+.ticket-frame { border:1px solid #a34b68; background:linear-gradient(135deg,#24131e,#100d12 70%); padding:20px; border-radius:18px; margin:24px 0; box-shadow:0 0 45px #9c315333; }
+.ticket-placeholder { border:1px dashed #a85a76; border-radius:12px; min-height:150px; display:grid; place-items:center; padding:18px; color:#d9b9c7; }
+.ticket-placeholder img { max-width:100%; max-height:440px; object-fit:contain; border-radius:8px; }
+.ticket-placeholder a { color:#ffd5e1; }
+.upload { display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:12px 17px; border:1px solid #8c536b; border-radius:999px; cursor:pointer; color:#f5dce5; margin:8px 0; }
+.upload input { display:none; }
+.small { color:var(--muted); font-size:.83rem; line-height:1.6; }
+.footer { text-align:center; color:#806b78; font-size:.72rem; margin-top:45px; letter-spacing:.12em; }
+.hidden { display:none !important; }
+@media (max-width:520px) { main { padding:14px 14px 48px; } .topline { font-size:.62rem; } .hero { min-height:68vh; } .code-row { flex-direction:column; } .btn { width:100%; } .actions { flex-direction:column; } }
+@media (prefers-reduced-motion:reduce) { *,*:before,*:after { animation-duration:.01ms !important; transition-duration:.01ms !important; scroll-behavior:auto !important; } }
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="ambient"></div><div class="grain"></div>
+  <main>
+    <header class="topline"><span>Expediente confidencial · Solo para Pimxucita</span><span class="seal">♥</span></header>
+    <div class="progress-wrap"><div class="progress-meta"><span id="stageName">ARCHIVO 01 · ACCESO</span><span id="stageCount">0 / 5</span></div><div class="progress"><span id="bar"></span></div></div>
+
+    <section class="screen active" id="s0">
+      <div class="hero">
+        <div class="eyebrow">Una operación bastante sospechosa</div>
+        <div class="ornament">✦ ⛧ ✦</div>
+        <h1>La noche<br><em>que no esperabas pero querias :D</em></h1>
+        <p class="lead">Se ha detectado una misión de alto riesgo: una sorpresa preparada por Pimxuneitor. Para acceder al expediente vas a tener que superar unas pruebas. No se aceptan sobornos… osi? no :> osi?.</p>
+        <div class="actions"><button class="btn" onclick="go(1)">ACEPTAR LA MISIÓN ↗</button></div>
+        <p class="small">Duración estimada: 5 minutos · Dificultad: sospechosamente fácil</p>
+      </div>
+    </section>
+
+    <section class="screen" id="s1">
+      <div class="panel">
+        <div class="eyebrow">Prueba 01 · Interrogatorio sentimental</div><h2>Veamos qué tan bien nos conocemos.</h2>
+        <p class="lead">Contestá estas cuatro preguntas sobre nuestra historia. La organización aclara que las respuestas incorrectas no serán usadas en tu contra… por ahora ewe.</p>
+        <div id="quiz"></div>
+        <div class="feedback" id="quizFeedback" aria-live="polite"></div>
+        <div class="actions"><button class="btn" id="quizNext" disabled>CONTINUAR</button></div>
+      </div>
+    </section>
+
+    <section class="screen" id="s2">
+      <div class="panel">
+        <div class="eyebrow">Prueba 02 · Memoria de pimxucita</div><h2>Un pequeño examen sorpresa.</h2>
+        <p class="lead">Encontrá las tres parejas. Si tardás, podés culpar al estrés de la misión.</p>
+        <div class="meter" id="memoryMeter"><i></i><i></i><i></i></div>
+        <div class="choices" id="memoryGrid" style="grid-template-columns:repeat(3,1fr)"></div>
+        <div class="feedback" id="memoryFeedback" aria-live="polite">Tocá dos cartas para descubrir si coinciden.</div>
+        <div class="actions"><button class="btn" id="memoryNext" disabled onclick="go(3)">DESBLOQUEAR SIGUIENTE PRUEBA</button></div>
+      </div>
+    </section>
+
+    <section class="screen" id="s3">
+      <div class="panel">
+        <div class="eyebrow">Prueba 03 · Fragmentos del recuerdo</div><h2>Una palabra hecha pedazos.</h2>
+        <p class="lead">El expediente encontró siete letras fuera de lugar. Ordenalas para reconstruir la palabra secreta. Pista: algo que se mide en años y guarda muchísimos recuerdos.</p>
+        <div id="letterTiles" class="choices" style="grid-template-columns:repeat(4,1fr);max-width:440px;margin:24px auto"></div>
+        <div class="code-row"><input id="puzzleAnswer" maxlength="7" placeholder="TU RESPUESTA" aria-label="Respuesta del puzzle"><button class="btn" onclick="checkPuzzle()">DESBLOQUEAR</button></div>
+        <div class="feedback" id="puzzleFeedback" aria-live="polite" style="text-align:center"></div>
+        <div class="actions"><button class="btn secondary" onclick="shufflePuzzle()">MEZCLAR LETRAS</button><button class="btn hidden" id="puzzleNext" onclick="go(4)">CONTINUAR</button></div>
+      </div>
+    </section>
+
+    <section class="screen" id="s4">
+      <div class="panel">
+        <div class="eyebrow">Prueba 04 · Código de acceso</div><h2>El mensaje oculto.</h2>
+        <p class="riddle">“No soy una fecha ni un lugar.<br>Soy tres letras que anuncian guitarras,<br>gritos y una noche para recordar.”</p>
+        <p class="lead" style="text-align:center">Ingresá las iniciales del nombre corto del artista que está detrás de esta sorpresa.</p>
+        <div class="code-row"><input id="secretCode" maxlength="3" placeholder="___" aria-label="Código secreto"><button class="btn" onclick="checkCode()">VERIFICAR</button></div>
+        <div class="feedback" id="codeFeedback" aria-live="polite" style="text-align:center"></div>
+        <div class="actions"><button class="btn secondary" id="codeHint" onclick="hintCode()">Necesito una pista</button><button class="btn hidden" id="codeNext" onclick="go(5)">ABRIR EL ÚLTIMO SOBRE</button></div>
+      </div>
+    </section>
+
+    <section class="screen" id="s5">
+      <div class="eyebrow" style="text-align:center">Último archivo · Una confesión</div>
+      <h2 style="text-align:center">Antes de revelar el secreto…</h2>
+      <div class="letter">
+        <h2>Para mi Amorcito,</h2>
+        <p>Si llegaste hasta acá, me sorprendiste con la memoria AHK. Aunque, siendo honestos, probablemente habrías descubierto la sorpresa abriendo el link hecho por yo el puñetas.</p>
+        <p>Quería regalarte la florcita amarilla y no pude :c asi que algo te tenia que regalar :D Aunque la akein se queria adueñar de mi regalo iwi. Como no te pude regalar las flores :D mejor te regalo un momento, una noche para cantar, para k grites como looooooocas loooooooocas, y que jamas se te olvide. Me hace feliz imaginarte disfrutándolo sisi.</p>
+        <p>Gracias por ser mi Espocita. Te amo. Nuestra historia recién empieza ci uwu.</p>
+        <p class="signature">Con todo mi amor. El puñeton 🖤</p>
+      </div>
+      <div class="actions"><button class="btn" onclick="reveal()">DESCUBRIR TU REGALO ✦</button></div>
+    </section>
+
+    <section class="screen" id="s6">
+      <div class="reveal">
+        <div class="eyebrow">Operación completada · Objetivo desbloqueado</div>
+        <div class="ornament">✦ ♡ ✦</div>
+        <h1 style="font-size:clamp(2.8rem,10vw,5.4rem)">¡VAS A VER<br><em>A MIW!</em></h1>
+        <p class="lead" style="margin:0 auto">Prepara todo, la energía y las ganas de vivir sobretodo ci. Porque ni voz te va a quedar despues de gritar tanto :D.</p>
+        <div class="ticket-frame">
+          <div class="eyebrow">Admitida · Invitación oficial</div>
+          <h2 style="margin:14px 0">Una noche para recordar</h2>
+          <div class="ticket-placeholder" id="ticketPreview"><div><div style="font-size:2.4rem">🎟️</div><strong>Tus entradas te esperan acá</strong><p class="small">...</p></div></div>
+          <label class="upload">＋ Agregar entradas originales<input type="file" id="ticketFiles" accept="image/*,.pdf" multiple></label>
+        </div>
+        <h3>La misión terminó. 🖤</h3>
+        <p class="small">Te amo. Gracias por jugar (y por aguantar mis ideas).</p>
+        <div class="actions"><button class="btn secondary" onclick="restart()">VOLVER A JUGAR</button></div>
+      </div>
+    </section>
+    <footer class="footer">HECHO CON AMOR · CLASIFICACIÓN: SOLO PARA PIMXUCITA</footer>
+  </main>
+</div>
+<script>
+const names = ['ACCESO','INTERROGATORIO','MEMORIA','PUZZLE','CÓDIGO','CONFESIÓN','REVELACIÓN'];
+function go(n) {
+  document.querySelectorAll('.screen').forEach((el,i)=>el.classList.toggle('active',i===n));
+  document.getElementById('stageName').textContent = `ARCHIVO 0${n+1} · ${names[n]}`;
+  document.getElementById('stageCount').textContent = `${n} / 6`;
+  document.getElementById('bar').style.width = `${n/6*100}%`;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+const questions = [
+ {q:'¿Qué es lo que más te pedía cuando nos estábamos conociendo?',a:['🍪 Galletitas','Banear gente indeseable','Escuchar música en el chat'],correct:[0],why:'¡Galletitas! Algunas cosas nunca cambian. 🍪'},
+ {q:'¿Qué banda fue la primera que tuvimos en común en 2016–17?',a:['BTS','EXO','MOMOLAND'],correct:[0],why:'¡BTS! Ahí empezó una parte de nuestra historia musical.'},
+ {q:'¿Quién es la más wonita de la existencia?',a:['La pimxucita','A','B'],correct:[0,1,2],why:'Las tres respuestas son correctas. No había forma de fallar, pimxucita. 🖤'},
+ {q:'La última :D ¿Cómo se llamaba nuestro primer hijito virtual?',a:['Jaime','Jaimito','Emeregildo'],correct:[1],why:'¡Jaimito! Un nombre que merece quedar en los archivos históricos.'}
+];
+let qIndex=0, quizScore=0;
+function renderQuestion(){
+ const q=questions[qIndex];
+ document.getElementById('quiz').innerHTML=`<p class="question">Pregunta ${qIndex+1} de ${questions.length}</p><h3>${q.q}</h3><div class="choices">${q.a.map((a,i)=>`<button class="choice" onclick="answerQuiz(${i})">${a}</button>`).join('')}</div>`;
+}
+function answerQuiz(i){
+ const q=questions[qIndex]; const btns=[...document.querySelectorAll('#quiz .choice')];
+ btns.forEach((b,j)=>{b.disabled=true;if(q.correct.includes(j))b.classList.add('selected')});
+ if(q.correct.includes(i))quizScore++;
+ document.getElementById('quizFeedback').textContent=q.why;
+ const next=document.getElementById('quizNext');
+ next.disabled=false;next.textContent=qIndex===questions.length-1?'REVELAR PALABRA':'SIGUIENTE PREGUNTA';
+ next.onclick=()=>{if(qIndex<questions.length-1){qIndex++;renderQuestion();document.getElementById('quizFeedback').textContent='';next.disabled=true;}else{next.textContent='IR A LA SIGUIENTE PRUEBA';next.onclick=()=>go(2)}};
+}
+renderQuestion();
+const symbols=['🖤','🎸','🌙','🎸','🌙','🖤'];
+let cards=[],flipped=[],matched=0,lock=false;
+function setupMemory(){
+ cards=symbols.map((s,i)=>({s,id:i,done:false})).sort(()=>Math.random()-.5);
+ const grid=document.getElementById('memoryGrid');grid.innerHTML='';
+ cards.forEach((c,i)=>{const b=document.createElement('button');b.className='choice';b.style.textAlign='center';b.style.fontSize='1.7rem';b.textContent='✦';b.setAttribute('aria-label','Carta oculta');b.onclick=()=>flipCard(i,b);grid.appendChild(b)});
+}
+function flipCard(i,b){
+ if(lock||cards[i].done||flipped.some(x=>x.i===i))return;
+ b.textContent=cards[i].s;flipped.push({i,b});
+ if(flipped.length===2){lock=true;const [a,c]=flipped;
+ if(cards[a.i].s===cards[c.i].s){cards[a.i].done=cards[c.i].done=true;matched++;document.getElementById('memoryFeedback').textContent='¡Pareja encontrada! El expediente empieza a tener sentido.';document.querySelectorAll('#memoryGrid .choice').forEach((el,j)=>{if(j===a.i||j===c.i)el.classList.add('selected')});flipped=[];lock=false;document.querySelectorAll('#memoryMeter i')[matched-1].classList.add('on');if(matched===3){document.getElementById('memoryFeedback').textContent='¡Las tres parejas! Sos oficialmente demasiado buena en esto.';document.getElementById('memoryNext').disabled=false}}
+ else{document.getElementById('memoryFeedback').textContent='No coinciden. El destino te está dando otra oportunidad…';setTimeout(()=>{a.b.textContent='✦';c.b.textContent='✦';flipped=[];lock=false},850)}
+ }
+}
+setupMemory();
+let puzzleLetters=[];
+function shufflePuzzle(){puzzleLetters='DECADES'.split('').sort(()=>Math.random()-.5);if(puzzleLetters.join('')==='DECADES')puzzleLetters.reverse();document.getElementById('letterTiles').innerHTML=puzzleLetters.map((l,i)=>`<button class="choice" style="text-align:center;font-size:1.45rem;font-family:var(--site-font-heading)" onclick="pickPuzzleLetter(${i})">${l}</button>`).join('');document.getElementById('puzzleAnswer').value='';document.getElementById('puzzleFeedback').textContent='';document.getElementById('puzzleNext').classList.add('hidden')}
+function pickPuzzleLetter(i){const input=document.getElementById('puzzleAnswer');if(input.value.length<7)input.value+=puzzleLetters[i]}
+function checkPuzzle(){const answer=document.getElementById('puzzleAnswer').value.trim().toUpperCase();const feedback=document.getElementById('puzzleFeedback');if(answer==='DECADES'){feedback.textContent='¡La palabra era DECADES! Fragmentos reconstruidos. El recuerdo vuelve a estar completo. 🖤';document.getElementById('puzzleNext').classList.remove('hidden')}else{feedback.textContent='Todavía no. Probá ordenar las siete letras de otra manera.'}}
+shufflePuzzle();
+function checkCode(){const v=document.getElementById('secretCode').value.trim().toUpperCase();const f=document.getElementById('codeFeedback');if(v==='MIW'){f.textContent='¡Código correcto! Ya sabés demasiado…';document.getElementById('codeNext').classList.remove('hidden');document.getElementById('codeHint').classList.add('hidden')}else{f.textContent='Código incorrecto. Pista: son las tres letras que aparecen en la sorpresa. 😉'}}
+function hintCode(){document.getElementById('codeFeedback').textContent='Pista: empieza con M… y termina con W. No era tan difícil, agente.'}
+document.getElementById('secretCode').addEventListener('keydown',e=>{if(e.key==='Enter')checkCode()});
+function reveal(){go(6);document.getElementById('bar').style.width='100%';document.getElementById('stageCount').textContent='6 / 6';confetti();}
+function confetti(){const colors=['#d75b78','#d9b879','#f5dce5','#8f1d36'];for(let i=0;i<65;i++){const p=document.createElement('span');p.textContent=['✦','♥','✧'][i%3];p.style.cssText=`position:fixed;z-index:9;left:${Math.random()*100}vw;top:-30px;color:${colors[i%4]};font-size:${12+Math.random()*18}px;pointer-events:none;animation:fall ${2+Math.random()*2}s linear forwards`;document.body.appendChild(p);setTimeout(()=>p.remove(),4200)}const st=document.createElement('style');st.textContent='@keyframes fall{to{transform:translateY(110vh) rotate(540deg);opacity:0}}';document.head.appendChild(st)}
+document.getElementById('ticketFiles').addEventListener('change',e=>{
+ const preview=document.getElementById('ticketPreview');preview.innerHTML='';
+ [...e.target.files].forEach(file=>{const url=URL.createObjectURL(file);if(file.type.startsWith('image/')){const img=document.createElement('img');img.src=url;img.alt='Entrada de MIW';preview.appendChild(img)}else if(file.type==='application/pdf'){const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener';a.textContent='Abrir entrada en PDF: '+file.name;preview.appendChild(a)}else{const p=document.createElement('p');p.textContent=file.name;preview.appendChild(p)}});
+});
+function restart(){qIndex=0;quizScore=0;renderQuestion();document.getElementById('quizFeedback').textContent='';document.getElementById('quizNext').disabled=true;document.getElementById('quizNext').textContent='CONTINUAR';matched=0;flipped=[];document.querySelectorAll('#memoryMeter i').forEach(x=>x.classList.remove('on'));document.getElementById('memoryNext').disabled=true;document.getElementById('memoryFeedback').textContent='Tocá dos cartas para descubrir si coinciden.';setupMemory();shufflePuzzle();document.getElementById('secretCode').value='';document.getElementById('codeFeedback').textContent='';document.getElementById('codeNext').classList.add('hidden');document.getElementById('codeHint').classList.remove('hidden');document.getElementById('ticketFiles').value='';document.getElementById('ticketPreview').innerHTML='<div><div style="font-size:2.4rem">🎟️</div><strong>Tus entradas te esperan acá</strong><p class="small">Podés cargar las entradas originales debajo. Las imágenes se mostrarán en esta pantalla.</p></div>';go(0)}
+</script>
+</body>
+</html>
